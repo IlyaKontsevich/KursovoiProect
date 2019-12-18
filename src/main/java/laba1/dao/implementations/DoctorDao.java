@@ -36,8 +36,9 @@ public class DoctorDao implements IDao<Doctor> {
 
     @Override
     public Doctor update(Doctor doctor) throws SQLException {
-        PreparedStatement statement = getCreateStatement("UPDATE doctors SET name = ?", "id");
+        PreparedStatement statement = getCreateStatement("UPDATE doctors SET name = ? where id = ?", "id");
         statement.setString(1, doctor.getName());
+        statement.setInt(2, doctor.getId());
 
         return (Doctor) saveAndExistsCheck(statement, doctor);
     }

@@ -40,12 +40,14 @@ public class PatientDao implements IDao<Patient> {
 
     @Override
     public Patient update(Patient patient) throws SQLException {
-        PreparedStatement statement = getCreateStatement("UPDATE patients SET name = ?, diagnosis = ?, room_id = ?, doctor_id = ?",
+        PreparedStatement statement = getCreateStatement("UPDATE patients SET name = ?, diagnosis = ?, room_id = ?, doctor_id = ?" +
+                        " where id = ?",
                 "id");
         statement.setString(1, patient.getName());
         statement.setString(2, patient.getDiagnosis());
         statement.setInt(3, patient.getRoomId());
         statement.setInt(4, patient.getDoctorId());
+        statement.setInt(5, patient.getId());
 
         return (Patient) saveAndExistsCheck(statement, patient);
     }

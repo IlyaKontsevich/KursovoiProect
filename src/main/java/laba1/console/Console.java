@@ -1,6 +1,5 @@
 package laba1.console;
 
-import com.itextpdf.text.pdf.PdfWriter;
 import laba1.model.Doctor;
 import laba1.model.Employee;
 import laba1.model.Patient;
@@ -8,8 +7,10 @@ import laba1.model.Room;
 import laba1.service.*;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Console {
     private Scanner scanner = new Scanner(System.in);
@@ -17,12 +18,12 @@ public class Console {
     private EmployeeService employeeService = new EmployeeService();
     private PatientService patientService = new PatientService();
     private RoomService roomService = new RoomService();
-    private PdfWriter pdfWrite = new PdfWriter();
+    private PdfWrite pdfWrite = new PdfWrite();
 
-    public void run() throws Exception {
-        Integer item = 9;
-        while (item != 20) {
-            info();
+    private void addActions() throws Exception {
+        Integer item = 12;
+        while (item != 5) {
+            addInfo();
             item = scanner.nextInt();
             switch (item) {
                 case 1: {
@@ -42,67 +43,151 @@ public class Console {
                     break;
                 }
                 case 5: {
+                    run();
+                    break;
+                }
+                default: {
+                    item = 5;
+                }
+            }
+        }
+    }
+
+    private void findActions() throws Exception {
+        Integer item = 12;
+        while (item != 5) {
+            findInfo();
+            item = scanner.nextInt();
+            switch (item) {
+                case 1: {
                     findRoom();
                     break;
                 }
-                case 6: {
+                case 2: {
                     findPatient();
                     break;
                 }
-                case 7: {
+                case 3: {
                     findDoctor();
                     break;
                 }
-                case 8: {
+                case 4: {
                     findEmployee();
                     break;
                 }
-                case 9: {
-                    updateRoom();
+                case 5: {
+                    run();
                     break;
                 }
-                case 10: {
-                    updatePatient();
-                    break;
+                default: {
+                    item = 5;
                 }
-                case 11: {
-                    updateDoctor();
-                    break;
-                }
-                case 12: {
-                    updateEmployee();
-                    break;
-                }
-                case 13: {
+            }
+        }
+    }
+
+    private void deleteActions() throws Exception {
+        Integer item = 12;
+        while (item != 5) {
+            deleteInfo();
+            item = scanner.nextInt();
+            switch (item) {
+                case 1: {
                     deleteRoom();
                     break;
                 }
-                case 14: {
+                case 2: {
                     deletePatient();
                     break;
                 }
-                case 15: {
+                case 3: {
                     deleteDoctor();
                     break;
                 }
-                case 16: {
+                case 4: {
                     deleteEmployee();
                     break;
                 }
-                case 17: {
+                case 5: {
+                    run();
+                    break;
+                }
+                default: {
+                    item = 5;
+                }
+            }
+        }
+    }
+
+    private void updateActions() throws Exception {
+        Integer item = 12;
+        while (item != 5) {
+            updateInfo();
+            item = scanner.nextInt();
+            switch (item) {
+                case 1: {
+                    updateRoom();
+                    break;
+                }
+                case 2: {
+                    updatePatient();
+                    break;
+                }
+                case 3: {
+                    updateDoctor();
+                    break;
+                }
+                case 4: {
+                    updateEmployee();
+                    break;
+                }
+                case 5: {
+                    run();
+                    break;
+                }
+                default: {
+                    item = 5;
+                }
+            }
+        }
+    }
+
+    public void run() throws Exception {
+        Integer item = 9;
+        while (item != 8) {
+            info();
+            item = scanner.nextInt();
+            switch (item) {
+                case 1: {
+                    addActions();
+                    break;
+                }
+                case 2: {
+                    findActions();
+                    break;
+                }
+                case 3: {
+                    updateActions();
+                    break;
+                }
+                case 4: {
+                    deleteActions();
+                    break;
+                }
+                case 5: {
                     viewAll();
                     break;
                 }
-                case 18: {
+                case 6: {
                     viewFreeRooms();
                     break;
                 }
-                case 19: {
+                case 7: {
                     saveInfo();
                     break;
                 }
                 default: {
-                    item = 20;
+                    item = 8;
                 }
             }
         }
@@ -110,32 +195,65 @@ public class Console {
 
     }
 
-    private void saveInfo() {
+    private void saveInfo() throws SQLException {
+        scanner.nextLine();
         System.out.println("Please, enter a filename");
-        String fileName = scanner.nextLine();;
-        pdfWrite.write(fileName, roomVOList);
+        String fileName = scanner.nextLine();
+        List<String> allElements = new ArrayList<>();
+
+        allElements.add(doctorService.getAll().stream().map(Doctor::toString)
+                .collect(Collectors.joining(", ")));
+        allElements.add(employeeService.getAll().stream().map(Employee::toString)
+                .collect(Collectors.joining(", ")));
+        allElements.add(patientService.getAll().stream().map(Patient::toString)
+                .collect(Collectors.joining(", ")));
+        allElements.add(roomService.getAll().stream().map(Room::toString)
+                .collect(Collectors.joining(", ")));
+        pdfWrite.write(fileName, allElements);
+    }
+
+    private void addInfo() {
+        System.out.println("        1.Add room");
+        System.out.println("        2.Add patient");
+        System.out.println("        3.Add doctor");
+        System.out.println("        4.Add employee");
+        System.out.println("        5.Menu");
+    }
+
+    private void findInfo() {
+        System.out.println("        1.Find room");
+        System.out.println("        2.Find patient");
+        System.out.println("        3.Find doctor");
+        System.out.println("        4.Find employee");
+        System.out.println("        5.Menu");
+    }
+
+    private void deleteInfo() {
+        System.out.println("        1.Delete room");
+        System.out.println("        2.Delete patient");
+        System.out.println("        3.Delete doctor");
+        System.out.println("        4.Delete employee");
+        System.out.println("        5.Menu");
+    }
+
+    private void updateInfo() {
+        System.out.println("        1.Update room");
+        System.out.println("        2.Update patient");
+        System.out.println("        3.Update doctor");
+        System.out.println("        4.Update employee");
+        System.out.println("        5.Menu");
     }
 
     private void info() {
-        System.out.println("1.Add room");
-        System.out.println("2.Add patient");
-        System.out.println("3.Add doctor");
-        System.out.println("4.Add employee");
-        System.out.println("5.Find room");
-        System.out.println("6.Find patient");
-        System.out.println("7.Find doctor");
-        System.out.println("8.Find employee");
-        System.out.println("9.Update room");
-        System.out.println("10.Update patient");
-        System.out.println("11.Update doctor");
-        System.out.println("12.Update employee");
-        System.out.println("13.Delete room");
-        System.out.println("14.Delete patient");
-        System.out.println("15.Delete doctor");
-        System.out.println("16.Delete employee");
-        System.out.println("17.View all");
-        System.out.println("18.View free rooms");
-        System.out.println("19.Exit");
+        System.out.println("        Menu");
+        System.out.println("        1.Add ...");
+        System.out.println("        2.Find ....");
+        System.out.println("        3.Update ...");
+        System.out.println("        4.Delete ....");
+        System.out.println("        5.View all");
+        System.out.println("        6.View free rooms");
+        System.out.println("        7.Save info");
+        System.out.println("        8.Exit");
     }
 
     private Room addRoom() throws Exception {
@@ -181,6 +299,12 @@ public class Console {
         Patient patient = new Patient();
         patient.setDiagnosis(diagnosis);
         patient.setName(name);
+        Room room = roomService.getByName(roomName);
+        Doctor doctor = doctorService.getByName(doctorName);
+        if (doctor == null || room == null) {
+            System.out.println("room or doctor don't exists");
+            return null;
+        }
         patient.setRoomId(roomService.getByName(roomName).getId());
         patient.setDoctorId(doctorService.getByName(doctorName).getId());
         return patientService.add(patient);
@@ -195,32 +319,42 @@ public class Console {
         return doctorService.add(doctor);
     }
 
+    private boolean printAndExistsCheck(Object object) {
+        if (object == null) {
+            System.out.println("Element don't exists");
+            return false;
+        } else {
+            System.out.println(object.toString());
+            return true;
+        }
+    }
+
     private void findPatient() throws Exception {
         scanner.nextLine();
         System.out.println("Enter patient name: ");
         String name = scanner.nextLine();
-        System.out.println(patientService.getByName(name).toString());
+        printAndExistsCheck(patientService.getByName(name));
     }
 
     private void findRoom() throws Exception {
         scanner.nextLine();
         System.out.println("Enter room name: ");
         String name = scanner.nextLine();
-        System.out.println(roomService.getByName(name).toString());
+        printAndExistsCheck(roomService.getByName(name));
     }
 
     private void findDoctor() throws Exception {
         scanner.nextLine();
         System.out.println("Enter doctor name: ");
         String name = scanner.nextLine();
-        System.out.println(doctorService.getByName(name).toString());
+        printAndExistsCheck(doctorService.getByName(name));
     }
 
     private void findEmployee() throws Exception {
         scanner.nextLine();
         System.out.println("Enter employee name: ");
         String name = scanner.nextLine();
-        System.out.println(employeeService.getByName(name).toString());
+        printAndExistsCheck(employeeService.getByName(name));
     }
 
 
@@ -228,9 +362,9 @@ public class Console {
         scanner.nextLine();
         System.out.println("Enter patient name for deleting: ");
         String name = scanner.nextLine();
-        if(patientService.getByName(name)!= null) {
+        if (patientService.getByName(name) != null) {
             patientService.delete(patientService.getByName(name).getId());
-        }else {
+        } else {
             System.out.println("Patient don't exists");
         }
     }
@@ -239,9 +373,9 @@ public class Console {
         scanner.nextLine();
         System.out.println("Enter room name for deleting: ");
         String name = scanner.nextLine();
-        if(roomService.getByName(name)!= null) {
+        if (roomService.getByName(name) != null) {
             roomService.delete(roomService.getByName(name).getId());
-        }else {
+        } else {
             System.out.println("Room don't exists");
         }
     }
@@ -250,9 +384,9 @@ public class Console {
         scanner.nextLine();
         System.out.println("Enter employee name for deleting: ");
         String name = scanner.nextLine();
-        if(employeeService.getByName(name)!= null) {
+        if (employeeService.getByName(name) != null) {
             employeeService.delete(employeeService.getByName(name).getId());
-        }else {
+        } else {
             System.out.println("Employee don't exists");
         }
     }
@@ -261,9 +395,9 @@ public class Console {
         scanner.nextLine();
         System.out.println("Enter doctor name for deleting: ");
         String name = scanner.nextLine();
-        if(doctorService.getByName(name)!= null) {
+        if (doctorService.getByName(name) != null) {
             doctorService.delete(doctorService.getByName(name).getId());
-        }else {
+        } else {
             System.out.println("Doctor don't exists");
         }
     }
@@ -273,20 +407,28 @@ public class Console {
         System.out.println("Enter patient name: ");
         String name = scanner.nextLine();
         Patient patient = patientService.getByName(name);
-        System.out.println("Enter new params:");
-        System.out.println("Enter patient name: ");
-        String newName = scanner.nextLine();
-        System.out.println("Enter patient diagnosis: ");
-        String diagnosis = scanner.nextLine();
-        System.out.println("Enter room name: ");
-        String roomName = scanner.nextLine();
-        System.out.println("Enter doctor name: ");
-        String doctorName = scanner.nextLine();
-        patient.setDiagnosis(diagnosis);
-        patient.setName(newName);
-        patient.setRoomId(roomService.getByName(roomName).getId());
-        patient.setDoctorId(doctorService.getByName(doctorName).getId());
-        patientService.update(patient);
+        if (printAndExistsCheck(patient)) {
+            System.out.println("Enter new params:");
+            System.out.println("Enter patient name: ");
+            String newName = scanner.nextLine();
+            System.out.println("Enter patient diagnosis: ");
+            String diagnosis = scanner.nextLine();
+            System.out.println("Enter room name: ");
+            String roomName = scanner.nextLine();
+            System.out.println("Enter doctor name: ");
+            String doctorName = scanner.nextLine();
+            patient.setDiagnosis(diagnosis);
+            patient.setName(newName);
+            Room room = roomService.getByName(roomName);
+            Doctor doctor = doctorService.getByName(doctorName);
+            if (doctor == null || room == null) {
+                System.out.println("room or doctor don't exists");
+                return;
+            }
+            patient.setRoomId(room.getId());
+            patient.setDoctorId(doctor.getId());
+            patientService.update(patient);
+        }
     }
 
     private void updateRoom() throws Exception {
@@ -294,17 +436,19 @@ public class Console {
         System.out.println("Enter room name: ");
         String name = scanner.nextLine();
         Room room = roomService.getByName(name);
-        System.out.println("Enter new params:");
-        System.out.println("Enter room name: ");
-        String newName = scanner.nextLine();
-        System.out.println("Enter rooms size: ");
-        Integer size = scanner.nextInt();
-        System.out.println("Enter rooms free places: ");
-        Integer freePlaces = scanner.nextInt();
-        room.setName(newName);
-        room.setSize(size);
-        room.setFreePlaces(freePlaces);
-        roomService.update(room);
+        if (printAndExistsCheck(room)) {
+            System.out.println("Enter new params:");
+            System.out.println("Enter room name: ");
+            String newName = scanner.nextLine();
+            System.out.println("Enter rooms size: ");
+            Integer size = scanner.nextInt();
+            System.out.println("Enter rooms free places: ");
+            Integer freePlaces = scanner.nextInt();
+            room.setName(newName);
+            room.setSize(size);
+            room.setFreePlaces(freePlaces);
+            roomService.update(room);
+        }
     }
 
     private void updateEmployee() throws Exception {
@@ -312,17 +456,19 @@ public class Console {
         System.out.println("Enter employee name: ");
         String name = scanner.nextLine();
         Employee employee = employeeService.getByName(name);
-        System.out.println("Enter new params:");
-        System.out.println("Enter employee name: ");
-        String newName = scanner.nextLine();
-        System.out.println("Enter employee position: ");
-        String position = scanner.nextLine();
-        System.out.println("Enter employee mobile phone: ");
-        String mobilePhone = scanner.nextLine();
-        employee.setName(newName);
-        employee.setPosition(position);
-        employee.setMobilePhone(mobilePhone);
-        employeeService.update(employee);
+        if (printAndExistsCheck(employee)) {
+            System.out.println("Enter new params:");
+            System.out.println("Enter employee name: ");
+            String newName = scanner.nextLine();
+            System.out.println("Enter employee position: ");
+            String position = scanner.nextLine();
+            System.out.println("Enter employee mobile phone: ");
+            String mobilePhone = scanner.nextLine();
+            employee.setName(newName);
+            employee.setPosition(position);
+            employee.setMobilePhone(mobilePhone);
+            employeeService.update(employee);
+        }
     }
 
     private void updateDoctor() throws Exception {
@@ -330,11 +476,13 @@ public class Console {
         System.out.println("Enter doctor name: ");
         String name = scanner.nextLine();
         Doctor doctor = doctorService.getByName(name);
-        System.out.println("Enter new params:");
-        System.out.println("Enter doctor name: ");
-        String newName = scanner.nextLine();
-        doctor.setName(newName);
-        doctorService.update(doctor);
+        if (printAndExistsCheck(doctor)) {
+            System.out.println("Enter new params:");
+            System.out.println("Enter doctor name: ");
+            String newName = scanner.nextLine();
+            doctor.setName(newName);
+            doctorService.update(doctor);
+        }
     }
 
     private void viewFreeRooms() throws SQLException {
@@ -349,26 +497,26 @@ public class Console {
         List<Patient> patients = patientService.getAll();
         List<Room> rooms = roomService.getAll();
 
-        System.out.println("_____DOCTORS____");
-        for(Doctor doctor : doctors){
+        System.out.println(":::::::::::DOCTORS::::::::::");
+        for (Doctor doctor : doctors) {
             System.out.println(doctor.toString());
         }
-        System.out.println("________________");
-        System.out.println("_____EMPLOYEES____");
-        for(Employee employee : employees){
+        System.out.println("******************************");
+        System.out.println(":::::::::::EMPLOYEES:::::::::::::");
+        for (Employee employee : employees) {
             System.out.println(employee.toString());
         }
-        System.out.println("________________");
-        System.out.println("_____PATIENTS____");
-        for(Patient patient : patients){
+        System.out.println("******************************");
+        System.out.println("::::::::::::::::PATIENTS::::::::::::::::");
+        for (Patient patient : patients) {
             System.out.println(patient.toString());
         }
-        System.out.println("________________");
-        System.out.println("_____ROOMS____");
-        for(Room room : rooms){
+        System.out.println("**************************");
+        System.out.println(":::::::::::::::::ROOMS::::::::::::::");
+        for (Room room : rooms) {
             System.out.println(room.toString());
         }
-        System.out.println("________________");
+        System.out.println("***********************");
     }
 }
 

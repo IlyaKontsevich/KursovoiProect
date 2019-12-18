@@ -4,6 +4,7 @@ import laba1.dao.implementations.RoomDao;
 import laba1.model.Room;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class RoomService extends GenericService<Room> {
@@ -13,11 +14,12 @@ public class RoomService extends GenericService<Room> {
 
     public List<Room> getFreeRooms() throws SQLException {
         List<Room> rooms = dao.getAll();
+        List<Room> resultList = new ArrayList<>();
         for(Room room : rooms){
-            if(room.getFreePlaces() == 0){
-                rooms.remove(room);
-            };
+            if(room.getFreePlaces() != 0){
+                resultList.add(room);
+            }
         }
-        return rooms;
+        return resultList;
     }
 }

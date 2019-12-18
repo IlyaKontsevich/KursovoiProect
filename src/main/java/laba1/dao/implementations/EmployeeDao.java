@@ -40,10 +40,11 @@ public class EmployeeDao implements IDao<Employee> {
     @Override
     public Employee update(Employee employee) throws SQLException {
         PreparedStatement statement = getCreateStatement
-                ("UPDATE employees SET name = ?,position = ?, mobile_phone = ?","id");
+                ("UPDATE employees SET name = ?,position = ?, mobile_phone = ? where id = ?","id");
         statement.setString(1, employee.getName());
         statement.setString(2, employee.getPosition());
         statement.setString(3, employee.getMobilePhone());
+        statement.setInt(4, employee.getId());
 
         return (Employee) saveAndExistsCheck(statement, employee);
     }

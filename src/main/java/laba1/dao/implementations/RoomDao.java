@@ -37,11 +37,11 @@ public class RoomDao implements IDao<Room> {
 
     @Override
     public Room update(Room room) throws SQLException {
-        PreparedStatement statement = getCreateStatement("UPDATE rooms SET name = ?, size = ?, free_places = ?", "id");
+        PreparedStatement statement = getCreateStatement("UPDATE rooms SET name = ?, size = ?, free_places = ? where id = ?", "id");
         statement.setString(1, room.getName());
         statement.setInt(2, room.getSize());
         statement.setInt(3, room.getFreePlaces());
-
+        statement.setInt(4, room.getId());
         return (Room) saveAndExistsCheck(statement, room);
     }
 
